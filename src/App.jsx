@@ -4,7 +4,9 @@ import Wizard from './components/Wizard'
 import StageList from './components/StageList'
 import FlowGraph from './components/FlowGraph'
 import MethodDetail from './components/MethodDetail'
+import MindMap from './components/MindMap'
 import { stages as stageData, quickActions, recommendationRules } from './data/stages'
+import { mindmapStructure } from './data/mindmap'
 import { useFlowStore } from './store/useFlowStore'
 
 const findStageMethodById = (methodId) => {
@@ -235,6 +237,7 @@ function App() {
                 activePhase={activePhase}
                 onNodeClick={handleNodeClick}
               />
+              <MindMap data={mindmapStructure} />
               <MethodDetail method={detailMethod} />
             </div>
           </div>
