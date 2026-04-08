@@ -4,6 +4,7 @@ import Wizard from './components/Wizard'
 import StageList from './components/StageList'
 import FlowGraph from './components/FlowGraph'
 import MethodDetail from './components/MethodDetail'
+import MermaidSummary from './components/MermaidSummary'
 import MindMap from './components/MindMap'
 import { stages as stageData, quickActions, recommendationRules } from './data/stages'
 import { mindmapStructure } from './data/mindmap'
@@ -190,6 +191,17 @@ function App() {
         <section className="space-y-6">
           <QuickActions actions={quickActions} activePhase={activePhase} onAction={handleQuickAction} />
 
+          <div className="space-y-6">
+            <FlowGraph
+              stages={stageData}
+              highlightedStageId={detailMethod?.stageId || recommendation?.stageId}
+              activePhase={activePhase}
+              onNodeClick={handleNodeClick}
+              height={620}
+            />
+            <MermaidSummary />
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-sm text-white/60">
               <span className="text-xs uppercase tracking-[0.4em]">Status</span>
@@ -205,7 +217,7 @@ function App() {
             </button>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner">
                 <label className="relative block">
@@ -231,12 +243,6 @@ function App() {
             </div>
 
             <div className="space-y-6">
-              <FlowGraph
-                stages={stageData}
-                highlightedStageId={detailMethod?.stageId || recommendation?.stageId}
-                activePhase={activePhase}
-                onNodeClick={handleNodeClick}
-              />
               <MindMap data={mindmapStructure} />
               <MethodDetail method={detailMethod} />
             </div>

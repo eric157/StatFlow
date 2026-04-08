@@ -16,6 +16,7 @@
     "cytoscape": "^3.33.2",
     "framer-motion": "^12.38.0",
     "html-to-image": "^1.11.13",
+    "mermaid": "^11.14.0",
     "react": "^19.2.4",
     "react-d3-tree": "^3.6.6",
     "react-dom": "^19.2.4",

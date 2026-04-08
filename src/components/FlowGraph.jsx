@@ -15,7 +15,7 @@ const defaultEdges = [
   ['bayesian', 'comms'],
 ]
 
-export default function FlowGraph({ stages, highlightedStageId, activePhase, onNodeClick }) {
+export default function FlowGraph({ stages, highlightedStageId, activePhase, onNodeClick, height = 520 }) {
   const containerRef = useRef(null)
   const cyRef = useRef(null)
 
@@ -169,7 +169,7 @@ export default function FlowGraph({ stages, highlightedStageId, activePhase, onN
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-glass">
       <div className="text-[10px] uppercase tracking-[0.5em] text-white/50">Workflow graph</div>
-      <div ref={containerRef} className="h-[320px] w-full" />
+      <div ref={containerRef} className="h-full w-full" style={{ minHeight: height }} />
     </div>
   )
 }

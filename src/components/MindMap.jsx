@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Tree from 'react-d3-tree'
 import { toPng, toSvg } from 'html-to-image'
 
@@ -15,20 +15,39 @@ const palette = ['#5b30ff', '#3dd598', '#f4a261', '#ff5e8d', '#66c0ff']
 export default function MindMap({ data }) {
   const containerRef = useRef(null)
   const [orientation, setOrientation] = useState('vertical')
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
-  const treeProps = useMemo(
-    () => ({
+  useEffect(() => {
+    if (!containerRef.current) return undefined
+    const handleResize = () => {
+      setDimensions({
+        width: containerRef.current.clientWidth,
+        height: containerRef.current.clientHeight,
+      })
+    }
+    handleResize()
+    const observer = new ResizeObserver(handleResize)
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  const treeProps = useMemo(() => {
+    const translate =
+      orientation === 'horizontal'
+        ? { x: 70, y: dimensions.height ? dimensions.height / 2 : 260 }
+        : { x: dimensions.width ? dimensions.width / 2 : 400, y: 90 }
+
+    return {
       collapsible: false,
-      depthFactor: 180,
-      translate: orientation === 'horizontal' ? { x: 70, y: 280 } : { x: 420, y: 60 },
+      depthFactor: 190,
+      translate,
       orientation,
       pathFunc: 'elbow',
       zoomable: true,
-      scaleExtent: [0.5, 1.5],
+      scaleExtent: [0.7, 1.6],
       nodeSize: { x: 240, y: 120 },
-    }),
-    [orientation],
-  )
+    }
+  }, [orientation, dimensions])
 
   const renderNode = ({ nodeDatum }) => {
     const color = palette[nodeDatum.depth % palette.length]
@@ -36,15 +55,15 @@ export default function MindMap({ data }) {
       <g>
         <rect
           x={-110}
-          y={-25}
+          y={-30}
           rx={18}
           ry={18}
           width={220}
-          height={50}
+          height={60}
           fill={color}
-          opacity={0.85}
+          opacity={0.9}
           stroke="#ffffff55"
-          strokeWidth={1}
+          strokeWidth={1.5}
         />
         <foreignObject x={-100} y={-20} width={200} height={40}>
           <div className="text-[11px] text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -61,7 +80,11 @@ export default function MindMap({ data }) {
     if (!containerRef.current) return
     try {
       if (format === 'png') {
-        const dataUrl = await toPng(containerRef.current, { cacheBust: true, pixelRatio: 3, backgroundColor: '#050509' })
+        const dataUrl = await toPng(containerRef.current, {
+          cacheBust: true,
+          pixelRatio: 3,
+          backgroundColor: '#03030a',
+        })
         const blob = await (await fetch(dataUrl)).blob()
         downloadBlob(blob, 'statflow-mindmap.png')
       } else if (format === 'svg') {
@@ -78,7 +101,7 @@ export default function MindMap({ data }) {
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#06060d] to-[#0f0f18] p-4 shadow-[0_40px_90px_rgba(0,0,0,0.45)]">
+    <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#04040a] to-[#111126] p-4 shadow-[0_40px_90px_rgba(0,0,0,0.45)]">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-[11px] uppercase tracking-[0.5em] text-white/60">Mind map</p>
@@ -120,15 +143,15 @@ export default function MindMap({ data }) {
       </div>
       <div
         ref={containerRef}
-        className="mindmap-canvas relative h-[460px] w-full overflow-auto rounded-3xl border border-white/10 bg-gradient-to-br from-[#03030a] to-[#090919] p-2"
+        className="mindmap-canvas relative h-[500px] w-full overflow-auto rounded-3xl border border-white/10 bg-gradient-to-br from-[#03030a] to-[#050514] p-2"
       >
         <Tree
           data={data}
           {...treeProps}
-          styles={{
-            links: { stroke: '#ffffff1f', strokeWidth: 2 },
-          }}
           renderCustomNodeElement={(rd3tProps) => renderNode(rd3tProps)}
+          styles={{
+            links: { stroke: '#ffffff1f', strokeWidth: 2.5 },
+          }}
         />
       </div>
     </div>
