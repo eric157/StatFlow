@@ -5,7 +5,7 @@ import StageList from './components/StageList'
 import FlowGraph from './components/FlowGraph'
 import MethodDetail from './components/MethodDetail'
 import MermaidSummary from './components/MermaidSummary'
-import MindMap from './components/MindMap'
+import WorkflowTreeOverlay from './components/WorkflowTreeOverlay'
 import { stages as stageData, quickActions, recommendationRules } from './data/stages'
 import { mindmapStructure } from './data/mindmap'
 import { useFlowStore } from './store/useFlowStore'
@@ -200,6 +200,7 @@ function App() {
               height={620}
             />
             <MermaidSummary />
+            <WorkflowTreeOverlay data={mindmapStructure} />
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -217,35 +218,29 @@ function App() {
             </button>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner">
-                <label className="relative block">
-                  <span className="text-xs uppercase tracking-[0.4em] text-white/50">Global search</span>
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Search methods, tags, reasoning..."
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
-                  />
-                </label>
-              </div>
-              <StageList
-                stages={filteredStages}
-                searchQuery={searchQuery}
-                selectedMethodId={selectedMethodId}
-                recommendedMethod={recommendation}
-                onMethodClick={handleMethodClick}
-                openStageIds={openStageIds}
-                setOpenStageIds={setOpenStageIds}
-              />
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner">
+              <label className="relative block">
+                <span className="text-xs uppercase tracking-[0.4em] text-white/50">Global search</span>
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search methods, tags, reasoning..."
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
+                />
+              </label>
             </div>
-
-            <div className="space-y-6">
-              <MindMap data={mindmapStructure} />
-              <MethodDetail method={detailMethod} />
-            </div>
+            <StageList
+              stages={filteredStages}
+              searchQuery={searchQuery}
+              selectedMethodId={selectedMethodId}
+              recommendedMethod={recommendation}
+              onMethodClick={handleMethodClick}
+              openStageIds={openStageIds}
+              setOpenStageIds={setOpenStageIds}
+            />
+            <MethodDetail method={detailMethod} />
           </div>
         </section>
       </main>
