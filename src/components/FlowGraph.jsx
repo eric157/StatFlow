@@ -39,8 +39,8 @@ export default function FlowGraph({ stages, highlightedStageId, activePhase, onN
           style: {
             label: 'data(label)',
             'text-wrap': 'wrap',
-            'text-max-width': 120,
-            'font-size': 12,
+            'text-max-width': 220,
+            'font-size': 16,
             'font-weight': 600,
             'text-valign': 'center',
             'text-halign': 'center',
@@ -105,6 +105,8 @@ export default function FlowGraph({ stages, highlightedStageId, activePhase, onN
       },
     })
 
+    cy.zoomingEnabled(true)
+    cy.userZoomingEnabled(true)
     cy.on('tap', 'node', (evt) => {
       onNodeClick?.(evt.target.id())
     })

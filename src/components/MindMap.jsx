@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Tree from 'react-d3-tree'
 import { toPng, toSvg } from 'html-to-image'
-
 const downloadBlob = (blob, fileName) => {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
@@ -10,12 +9,45 @@ const downloadBlob = (blob, fileName) => {
   setTimeout(() => URL.revokeObjectURL(link.href), 60000)
 }
 
-const palette = ['#5b30ff', '#3dd598', '#f4a261', '#ff5e8d', '#66c0ff']
+const basePalette = ['#5b30ff', '#3dd598', '#f4a261', '#ff5e8d', '#66c0ff']
+const variants = [
+  {
+    id: 'mermaid3d',
+    label: 'Mermaid 3D glow',
+    gradient: 'linear-gradient(135deg, rgba(56,0,135,0.7), rgba(20,20,60,0.9))',
+    palette: ['#8a2be2', '#5b30ff', '#66c0ff', '#3dd598', '#f4a261'],
+  },
+  {
+    id: 'coggle',
+    label: 'Coggle nodes',
+    gradient: 'linear-gradient(180deg, rgba(3,8,68,0.95), rgba(10,51,93,0.95))',
+    palette: ['#ffe680', '#ff8066', '#69f0ae', '#66c0ff', '#ff5e8d'],
+  },
+  {
+    id: 'whimsical',
+    label: 'Whimsical panels',
+    gradient: 'linear-gradient(135deg, rgba(10,6,20,0.9), rgba(24,0,60,0.9))',
+    palette: ['#fdd835', '#ff7043', '#8e24aa', '#03a9f4', '#00c853'],
+  },
+  {
+    id: 'dhtmlx',
+    label: 'DHTMLX flow',
+    gradient: 'linear-gradient(135deg, rgba(5,5,20,0.9), rgba(5,35,65,0.95))',
+    palette: ['#00bcd4', '#ff9800', '#7b1fa2', '#cddc39', '#ff4081'],
+  },
+  {
+    id: 'syncfusion',
+    label: 'Syncfusion studio',
+    gradient: 'linear-gradient(135deg, rgba(2,4,20,0.9), rgba(12,12,65,0.95))',
+    palette: ['#009688', '#3dd598', '#5b30ff', '#ff4081', '#ffee58'],
+  },
+]
 
 export default function MindMap({ data }) {
   const containerRef = useRef(null)
   const [orientation, setOrientation] = useState('vertical')
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const [variantId, setVariantId] = useState('mermaid3d')
 
   useEffect(() => {
     if (!containerRef.current) return undefined
@@ -49,8 +81,9 @@ export default function MindMap({ data }) {
     }
   }, [orientation, dimensions])
 
+  const variant = variants.find((v) => v.id === variantId) || variants[0]
   const renderNode = ({ nodeDatum }) => {
-    const color = palette[nodeDatum.depth % palette.length]
+    const color = variant.palette[nodeDatum.depth % variant.palette.length]
     return (
       <g>
         <rect
@@ -101,7 +134,10 @@ export default function MindMap({ data }) {
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#04040a] to-[#111126] p-4 shadow-[0_40px_90px_rgba(0,0,0,0.45)]">
+    <div
+      className="rounded-3xl border border-white/10 p-4 shadow-[0_40px_90px_rgba(0,0,0,0.45)]"
+      style={{ background: variant.gradient }}
+    >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-[11px] uppercase tracking-[0.5em] text-white/60">Mind map</p>
@@ -117,10 +153,23 @@ export default function MindMap({ data }) {
                   ? 'border-plasma-300 bg-plasma-500/20 text-plasma-100'
                   : 'border-white/15 text-white/60'
               }`}
-            >
-              {mode}
-            </button>
-          ))}
+              >
+                {mode}
+              </button>
+            ))}
+          <div className="flex items-center gap-1 rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-white/60">
+            {variants.map((variant) => (
+              <button
+                key={variant.id}
+                onClick={() => setVariantId(variant.id)}
+                className={`rounded-full px-2 py-0.5 text-[10px] ${
+                  variantId === variant.id ? 'bg-white/10 text-white' : 'text-white/50'
+                }`}
+              >
+                {variant.label.split(' ')[0]}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => download('png')}
             className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-white/70"
