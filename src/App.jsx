@@ -162,9 +162,9 @@ function App() {
   )
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-[#05050d] via-[#03030a] to-[#030306] pb-16 text-white">
+    <div className="relative min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900/80 pb-16 text-white">
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-5 pt-8">
-        <header className="space-y-6 rounded-3xl border border-white/10 bg-gradient-to-br from-[#1b1a28] via-[#0b0b15] to-[#020204] p-6 shadow-glass">
+        <header className="space-y-6 rounded-3xl border border-slate-700/80 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-700/50 p-6 shadow-[0_35px_70px_rgba(5,5,15,0.45)]">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img

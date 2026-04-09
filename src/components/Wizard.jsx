@@ -48,18 +48,18 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
   const { wizard, setWizard } = useFlowStore()
 
   return (
-    <div className="border border-white/10 bg-white/5 backdrop-blur-xl shadow-glass rounded-3xl p-6 space-y-6">
+    <div className="border border-slate-200/40 bg-white/90 backdrop-blur-xl shadow-[0_50px_80px_rgba(15,23,42,0.35)] rounded-3xl p-6 space-y-6 text-slate-900">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm uppercase tracking-[0.5em] text-white/60">Decision wizard</p>
-          <h2 className="text-2xl font-semibold text-white">Smart guidance</h2>
+          <p className="text-sm uppercase tracking-[0.5em] text-slate-500">Decision wizard</p>
+          <h2 className="text-2xl font-semibold text-slate-900">Smart guidance</h2>
         </div>
-        <span className="px-3 py-1 text-xs font-semibold tracking-widest rounded-full border border-white/20 text-white/70">Multistep</span>
+        <span className="px-3 py-1 text-xs font-semibold tracking-widest rounded-full border border-slate-300 text-slate-500">Multistep</span>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {steps.map((step) => (
           <div key={step.key} className="space-y-2">
-            <div className="text-xs uppercase tracking-[0.4em] text-white/60">{step.label}</div>
+            <div className="text-xs uppercase tracking-[0.4em] text-slate-500">{step.label}</div>
             <div className="grid gap-2 md:grid-cols-3">
               {step.options.map((option) => {
                 const isActive = wizard[step.key] === option.value
@@ -71,8 +71,8 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
                     className={clsx(
                       'relative overflow-hidden rounded-2xl border px-3 py-2 text-left text-sm font-medium transition-all',
                       isActive
-                        ? 'border-plasma-500/80 bg-gradient-to-br from-plasma-500/30 to-plasma-500/10 text-white shadow-neon'
-                        : 'border-white/10 bg-white/5 text-white/70 hover:border-white/40 hover:bg-white/10'
+                        ? 'border-amber-400 bg-gradient-to-br from-amber-200/90 to-white text-slate-900 shadow-[0_20px_60px_rgba(253,186,116,0.35)]'
+                        : 'border-slate-200 bg-white text-slate-900/80 hover:border-amber-200 hover:text-slate-900'
                     )}
                   >
                     <div>{option.label}</div>
@@ -93,20 +93,20 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
       {recommendation && (
         <motion.div
           layout
-          className="rounded-2xl border border-plasma-400/60 bg-gradient-to-br from-white/10 to-white/5 p-5 shadow-inner"
+          className="rounded-2xl border border-slate-300/60 bg-gradient-to-br from-white/80 to-slate-100/80 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.25)] text-slate-900"
         >
-          <p className="text-[11px] uppercase tracking-[0.4em] text-white/60 mb-2">Smart recommendation</p>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-slate-500 mb-2">Smart recommendation</p>
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="text-2xl font-semibold text-white">{recommendation.name}</h3>
-              <p className="text-sm text-white/70 mt-1 leading-relaxed">{recommendation.description}</p>
+              <h3 className="text-2xl font-semibold text-slate-900">{recommendation.name}</h3>
+              <p className="text-sm text-slate-600 mt-1 leading-relaxed">{recommendation.description}</p>
             </div>
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">Why</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Why</span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-white/80">{recommendation.why}</p>
-          <div className="mt-3 grid gap-2 text-xs text-white/70">
-            <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-plasma-100">
-              <span className="h-2 w-2 rounded-full bg-plasma-500" /> Stage: {recommendation.stageTitle}
+          <p className="mt-3 text-sm leading-6 text-slate-600">{recommendation.why}</p>
+          <div className="mt-3 grid gap-2 text-xs text-slate-500">
+            <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-600">
+              <span className="h-2 w-2 rounded-full bg-amber-400" /> Stage: {recommendation.stageTitle}
             </span>
           </div>
         </motion.div>
@@ -114,31 +114,31 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
 
       <motion.div
         layout
-        className="mt-6 rounded-2xl border border-white/10 bg-gradient-to-br from-black/60 to-black/30 p-5 shadow-[0_30px_70px_rgba(0,0,0,0.3)]"
+        className="mt-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 shadow-[0_30px_70px_rgba(15,23,42,0.25)] text-slate-900"
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.4em] text-white/60">AI reasoning</p>
-            <p className="text-xs text-white/70">Gemma 4 (Ollama)</p>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-slate-500">AI reasoning</p>
+            <p className="text-xs text-slate-500">Gemma 4 (Ollama)</p>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">Dynamic prompts</span>
+          <span className="text-[10px] uppercase tracking-[0.35em] text-slate-400">Dynamic prompts</span>
         </div>
         <div className="mt-4 space-y-4">
           <AIInput onAnalyze={onAnalyze} loading={aiLoading} />
           {aiSummary && (
-            <div className="rounded-2xl border border-plasma-400/40 bg-black/80 p-4 shadow-inner">
-              <p className="text-[10px] uppercase tracking-[0.4em] text-white/50">Suggested test</p>
-              <h3 className="text-2xl font-semibold text-white mt-1">{aiSummary.recommended_test}</h3>
-              <p className="mt-2 text-sm text-white/70">{aiSummary.reasoning}</p>
-              <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.3em] text-white/60">
-                <span className="rounded-full border border-white/10 px-3 py-1">
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-inner text-slate-900">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-slate-400">Suggested test</p>
+              <h3 className="text-2xl font-semibold text-slate-900 mt-1">{aiSummary.recommended_test}</h3>
+              <p className="mt-2 text-sm text-slate-600">{aiSummary.reasoning}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                <span className="rounded-full border border-slate-200 px-3 py-1">
                   {aiSummary.data_type || 'Numerical'}
                 </span>
                 {aiSummary.groups && (
-                  <span className="rounded-full border border-white/10 px-3 py-1">{aiSummary.groups} groups</span>
+                  <span className="rounded-full border border-slate-200 px-3 py-1">{aiSummary.groups} groups</span>
                 )}
                 {aiSummary.normality && (
-                  <span className="rounded-full border border-white/10 px-3 py-1">{aiSummary.normality}</span>
+                  <span className="rounded-full border border-slate-200 px-3 py-1">{aiSummary.normality}</span>
                 )}
               </div>
             </div>

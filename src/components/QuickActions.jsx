@@ -14,17 +14,17 @@ export default function QuickActions({ actions, activePhase, onAction }) {
             className={clsx(
               'group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-300',
               isActive
-                ? 'border-plasma-400/70 bg-plasma-400/20 text-white shadow-neon'
-                : 'border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:bg-white/10'
+                ? 'border-transparent bg-gradient-to-br from-amber-100/90 to-slate-200 text-slate-900 shadow-[0_30px_50px_rgba(248,250,252,0.35)]'
+                : 'border-white/30 bg-white/80 text-slate-900 outline-1 outline-white/40 hover:border-transparent hover:shadow-[0_25px_40px_rgba(15,23,42,0.25)]'
             )}
           >
             <div className="text-2xl">{action.icon}</div>
-            <p className="mt-2 font-semibold text-base text-white">{action.label}</p>
-            <p className="text-xs text-white/60">{action.description}</p>
+            <p className="mt-2 font-semibold text-base text-slate-900">{action.label}</p>
+            <p className="text-xs text-slate-600">{action.description}</p>
             <div
               className={clsx(
-                'absolute inset-0 rounded-2xl border border-white/10 transition-opacity',
-                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                'absolute inset-0 rounded-2xl border border-transparent transition-opacity',
+                isActive ? 'opacity-0' : 'opacity-0'
               )}
             />
           </motion.button>
