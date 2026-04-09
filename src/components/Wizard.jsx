@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import clsx from 'clsx'
+import AIInput from './AIInput'
 import { useFlowStore } from '../store/useFlowStore'
 
 const steps = [
@@ -43,7 +44,7 @@ const steps = [
   },
 ]
 
-export default function Wizard({ recommendation }) {
+export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading }) {
   const { wizard, setWizard } = useFlowStore()
 
   return (
@@ -95,10 +96,10 @@ export default function Wizard({ recommendation }) {
           className="rounded-2xl border border-plasma-400/60 bg-gradient-to-br from-white/10 to-white/5 p-5 shadow-inner"
         >
           <p className="text-[11px] uppercase tracking-[0.4em] text-white/60 mb-2">Smart recommendation</p>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-white">{recommendation.name}</h3>
-              <p className="text-sm text-white/70 mt-1">{recommendation.description}</p>
+              <h3 className="text-2xl font-semibold text-white">{recommendation.name}</h3>
+              <p className="text-sm text-white/70 mt-1 leading-relaxed">{recommendation.description}</p>
             </div>
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">Why</span>
           </div>
@@ -110,6 +111,40 @@ export default function Wizard({ recommendation }) {
           </div>
         </motion.div>
       )}
+
+      <motion.div
+        layout
+        className="mt-6 rounded-2xl border border-white/10 bg-gradient-to-br from-black/60 to-black/30 p-5 shadow-[0_30px_70px_rgba(0,0,0,0.3)]"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-white/60">AI reasoning</p>
+            <p className="text-xs text-white/70">Gemma 4 (Ollama)</p>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">Dynamic prompts</span>
+        </div>
+        <div className="mt-4 space-y-4">
+          <AIInput onAnalyze={onAnalyze} loading={aiLoading} />
+          {aiSummary && (
+            <div className="rounded-2xl border border-plasma-400/40 bg-black/80 p-4 shadow-inner">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-white/50">Suggested test</p>
+              <h3 className="text-2xl font-semibold text-white mt-1">{aiSummary.recommended_test}</h3>
+              <p className="mt-2 text-sm text-white/70">{aiSummary.reasoning}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.3em] text-white/60">
+                <span className="rounded-full border border-white/10 px-3 py-1">
+                  {aiSummary.data_type || 'Numerical'}
+                </span>
+                {aiSummary.groups && (
+                  <span className="rounded-full border border-white/10 px-3 py-1">{aiSummary.groups} groups</span>
+                )}
+                {aiSummary.normality && (
+                  <span className="rounded-full border border-white/10 px-3 py-1">{aiSummary.normality}</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </motion.div>
     </div>
   )
 }

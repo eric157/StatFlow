@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import QuickActions from './components/QuickActions'
 import Wizard from './components/Wizard'
-import StageList from './components/StageList'
-import FlowGraph from './components/FlowGraph'
-import MethodDetail from './components/MethodDetail'
-import MermaidSummary from './components/MermaidSummary'
-import WorkflowTreeOverlay from './components/WorkflowTreeOverlay'
 import { stages as stageData, quickActions, recommendationRules } from './data/stages'
-import { mindmapStructure } from './data/mindmap'
+import { analyzeProblem } from './lib/aiClient'
 import { useFlowStore } from './store/useFlowStore'
+import statflowLogo from './assets/images/statflow-logo.png'
+import statflowIcon from './assets/images/statflow-icon.png'
 
 const findStageMethodById = (methodId) => {
   for (const stage of stageData) {
@@ -45,6 +42,9 @@ function App() {
     ensureStageOpen,
     resetFilters,
   } = useFlowStore()
+
+  const [aiSummary, setAiSummary] = useState(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   const normalizedQuery = searchQuery.trim().toLowerCase()
 
@@ -148,99 +148,101 @@ function App() {
     setOpenStageIds([])
   }
 
-  const handleNodeClick = useCallback(
-    (id) => {
-      const stage = stageData.find((item) => item.id === id)
-      if (stage) {
-        setActivePhase(stage.phase)
-        ensureStageOpen(id)
-        const method = stage.sections[0]?.methods[0]
-        if (method) selectMethod(method.id)
+  const handleAIAnalyze = useCallback(
+    async (message) => {
+      setAiLoading(true)
+      try {
+        const aiResult = await analyzeProblem(message)
+        setAiSummary(aiResult)
+      } finally {
+        setAiLoading(false)
       }
     },
-    [ensureStageOpen, selectMethod, setActivePhase],
+    [],
   )
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-[#08070f] via-[#05050c] to-[#030309] text-white">
-      <main className="mx-auto flex max-w-6xl flex-col gap-10 px-5 py-8 pb-16">
-        <header className="space-y-3 rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6 shadow-glass">
-          <p className="text-[11px] uppercase tracking-[0.6em] text-white/50">
-            StatFlow — Personal statistical decision system
-          </p>
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h1 className="text-4xl font-semibold text-white">StatFlow · statistical intelligence</h1>
-              <p className="mt-2 max-w-2xl text-white/70">
-                Transform your decision tree into a prod-level experience with guided recommendations, smart search, and luminosity at every step.
-              </p>
+    <div className="relative min-h-screen bg-gradient-to-b from-[#05050d] via-[#03030a] to-[#030306] pb-16 text-white">
+      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-5 pt-8">
+        <header className="space-y-6 rounded-3xl border border-white/10 bg-gradient-to-br from-[#1b1a28] via-[#0b0b15] to-[#020204] p-6 shadow-glass">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={statflowIcon}
+                alt="StatFlow mark"
+                className="h-12 w-12 rounded-2xl border border-white/10 bg-white/10 p-2"
+              />
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.5em] text-white/60">StatFlow</p>
+                <h1 className="text-2xl font-semibold text-white">Personal statistical intelligence</h1>
+              </div>
             </div>
-            <div className="flex flex-col items-start gap-2 text-xs uppercase tracking-[0.4em] text-white/60 md:items-end">
-              <span className="rounded-full border border-white/20 px-4 py-1 text-[10px] font-semibold text-white/70">
-                No backend · Pure UX
-              </span>
-              <span className="rounded-full border border-plasma-400/60 px-4 py-1 text-[10px] font-semibold text-plasma-100">
-                Crafted for you
-              </span>
+            <div className="flex flex-wrap gap-3 text-[10px] uppercase tracking-[0.5em] text-white/70">
+              <span className="rounded-full border border-white/20 px-3 py-1">Pure frontend</span>
             </div>
           </div>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl space-y-2">
+              <p className="text-[11px] uppercase tracking-[0.5em] text-white/60">StatFlow · decision engine</p>
+              <p className="text-4xl font-bold text-white">StatFlow · statistical intelligence</p>
+              <p className="text-white/70">
+                Luminosity, structure, and reasoning for the analytical mind. StatFlow merges a decision wizard and
+                AI reasoning into a premium statistical console.
+              </p>
+            </div>
+            <img
+              src={statflowLogo}
+              alt="StatFlow logo"
+              className="h-28 w-auto rounded-2xl border border-white/10 bg-white/5 p-3 shadow-neon"
+            />
+          </div>
         </header>
-
-        <Wizard recommendation={recommendation} />
 
         <section className="space-y-6">
           <QuickActions actions={quickActions} activePhase={activePhase} onAction={handleQuickAction} />
 
           <div className="space-y-6">
-            <FlowGraph
-              stages={stageData}
-              highlightedStageId={detailMethod?.stageId || recommendation?.stageId}
-              activePhase={activePhase}
-              onNodeClick={handleNodeClick}
-              height={620}
-            />
-            <MermaidSummary />
-            <WorkflowTreeOverlay data={mindmapStructure} />
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-white/60">
-              <span className="text-xs uppercase tracking-[0.4em]">Status</span>
-              <span>
-                {filteredStages.length} stages · {methodCount} methods
-              </span>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_35px_70px_rgba(0,0,0,0.45)]">
+              <Wizard
+                recommendation={recommendation}
+                aiSummary={aiSummary}
+                aiLoading={aiLoading}
+                onAnalyze={handleAIAnalyze}
+              />
             </div>
-            <button
-              onClick={handleReset}
-              className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.4em] text-white/70 transition hover:border-white/40"
-            >
-              Reset filters
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner">
-              <label className="relative block">
-                <span className="text-xs uppercase tracking-[0.4em] text-white/50">Global search</span>
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  placeholder="Search methods, tags, reasoning..."
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
-                />
-              </label>
+            <div className="space-y-4">
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+                <label className="block space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.4em] text-white/60">Global search</span>
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Search methods, tags, reasoning..."
+                    className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
+                  />
+                </label>
+                <p className="mt-3 text-xs uppercase tracking-[0.4em] text-white/40">Instant filtering · keeps stage open</p>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+                <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/60">
+                  <span>Decision stages</span>
+                  <span className="text-white/40">Scroll to navigate</span>
+                </div>
+                <div className="max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/30">
+                  <StageList
+                    stages={filteredStages}
+                    searchQuery={searchQuery}
+                    selectedMethodId={selectedMethodId}
+                    recommendedMethod={recommendation}
+                    onMethodClick={handleMethodClick}
+                    openStageIds={openStageIds}
+                    setOpenStageIds={setOpenStageIds}
+                  />
+                </div>
+              </div>
+              <MethodDetail method={detailMethod} />
             </div>
-            <StageList
-              stages={filteredStages}
-              searchQuery={searchQuery}
-              selectedMethodId={selectedMethodId}
-              recommendedMethod={recommendation}
-              onMethodClick={handleMethodClick}
-              openStageIds={openStageIds}
-              setOpenStageIds={setOpenStageIds}
-            />
-            <MethodDetail method={detailMethod} />
           </div>
         </section>
       </main>
