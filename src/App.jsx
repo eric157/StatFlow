@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import QuickActions from './components/QuickActions'
 import Wizard from './components/Wizard'
+import StageList from './components/StageList'
+import MethodDetail from './components/MethodDetail'
 import { stages as stageData, quickActions, recommendationRules } from './data/stages'
 import { analyzeProblem } from './lib/aiClient'
 import { useFlowStore } from './store/useFlowStore'
@@ -199,50 +200,49 @@ function App() {
         </header>
 
         <section className="space-y-6">
-          <QuickActions actions={quickActions} activePhase={activePhase} onAction={handleQuickAction} />
-
-          <div className="space-y-6">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_35px_70px_rgba(0,0,0,0.45)]">
-              <Wizard
-                recommendation={recommendation}
-                aiSummary={aiSummary}
-                aiLoading={aiLoading}
-                onAnalyze={handleAIAnalyze}
-              />
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_35px_70px_rgba(0,0,0,0.45)]">
+            <Wizard
+              recommendation={recommendation}
+              aiSummary={aiSummary}
+              aiLoading={aiLoading}
+              onAnalyze={handleAIAnalyze}
+              quickActions={quickActions}
+              activePhase={activePhase}
+              onQuickAction={handleQuickAction}
+            />
+          </div>
+          <div className="space-y-4">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+              <label className="block space-y-2">
+                <span className="text-[11px] uppercase tracking-[0.4em] text-white/60">Global search</span>
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search methods, tags, reasoning..."
+                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
+                />
+              </label>
+              <p className="mt-3 text-xs uppercase tracking-[0.4em] text-white/40">Instant filtering · keeps stage open</p>
             </div>
-            <div className="space-y-4">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
-                <label className="block space-y-2">
-                  <span className="text-[11px] uppercase tracking-[0.4em] text-white/60">Global search</span>
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Search methods, tags, reasoning..."
-                    className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-plasma-400/80"
-                  />
-                </label>
-                <p className="mt-3 text-xs uppercase tracking-[0.4em] text-white/40">Instant filtering · keeps stage open</p>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+              <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/60">
+                <span>Decision stages</span>
+                <span className="text-white/40">Scroll to navigate</span>
               </div>
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
-                <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/60">
-                  <span>Decision stages</span>
-                  <span className="text-white/40">Scroll to navigate</span>
-                </div>
-                <div className="max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/30">
-                  <StageList
-                    stages={filteredStages}
-                    searchQuery={searchQuery}
-                    selectedMethodId={selectedMethodId}
-                    recommendedMethod={recommendation}
-                    onMethodClick={handleMethodClick}
-                    openStageIds={openStageIds}
-                    setOpenStageIds={setOpenStageIds}
-                  />
-                </div>
+              <div className="max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/30">
+                <StageList
+                  stages={filteredStages}
+                  searchQuery={searchQuery}
+                  selectedMethodId={selectedMethodId}
+                  recommendedMethod={recommendation}
+                  onMethodClick={handleMethodClick}
+                  openStageIds={openStageIds}
+                  setOpenStageIds={setOpenStageIds}
+                />
               </div>
-              <MethodDetail method={detailMethod} />
             </div>
+            <MethodDetail method={detailMethod} />
           </div>
         </section>
       </main>

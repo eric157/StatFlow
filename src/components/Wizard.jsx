@@ -44,7 +44,15 @@ const steps = [
   },
 ]
 
-export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading }) {
+export default function Wizard({
+  recommendation,
+  aiSummary,
+  onAnalyze,
+  aiLoading,
+  quickActions = [],
+  activePhase,
+  onQuickAction,
+}) {
   const { wizard, setWizard } = useFlowStore()
 
   return (
@@ -54,7 +62,9 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
           <p className="text-sm uppercase tracking-[0.5em] text-slate-500">Decision wizard</p>
           <h2 className="text-2xl font-semibold text-slate-900">Smart guidance</h2>
         </div>
-        <span className="px-3 py-1 text-xs font-semibold tracking-widest rounded-full border border-slate-300 text-slate-500">Multistep</span>
+        <span className="px-3 py-1 text-xs font-semibold tracking-widest rounded-full border border-slate-300 text-slate-500">
+          Multistep
+        </span>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {steps.map((step) => (
@@ -76,7 +86,7 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
                     )}
                   >
                     <div>{option.label}</div>
-                    {option.sub ? <div className="text-xs text-white/60">{option.sub}</div> : null}
+                    {option.sub ? <div className="text-xs text-slate-400">{option.sub}</div> : null}
                     {isActive && (
                       <motion.div
                         layoutId={`wizard-pill-${step.key}`}
@@ -90,6 +100,37 @@ export default function Wizard({ recommendation, aiSummary, onAnalyze, aiLoading
           </div>
         ))}
       </div>
+
+      {quickActions.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] uppercase tracking-[0.45em] text-slate-400">Focus goals</p>
+            <span className="text-xs uppercase tracking-[0.3em] text-slate-400">Tap to jump</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {quickActions.map((action) => {
+              const isActive = action.phase === activePhase
+              return (
+                <button
+                  key={action.id}
+                  onClick={() => onQuickAction?.(action.phase)}
+                  className={clsx(
+                    'group flex flex-col gap-2 rounded-2xl border px-4 py-3 text-left transition duration-200',
+                    isActive
+                      ? 'border-amber-400 bg-amber-100/80 text-slate-900 shadow-[0_20px_50px_rgba(253,186,116,0.35)]'
+                      : 'border-slate-200 bg-white text-slate-900 hover:border-amber-200'
+                  )}
+                >
+                  <span className="text-2xl">{action.icon}</span>
+                  <p className="text-lg font-semibold tracking-tight">{action.label}</p>
+                  <p className="text-sm text-slate-500">{action.description}</p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {recommendation && (
         <motion.div
           layout
