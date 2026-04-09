@@ -1,16 +1,27 @@
-# React + Vite
+# StatFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StatFlow is a premium analytical console that layers AI reasoning, a decision wizard, and guided method details on top of a custom React + Vite shell. The repository is configured to publish the built UI to GitHub Pages so the app can live at `https://<owner>.github.io/<repo>/` (or the default GH Pages hosting URL if the repo is named `username.github.io`).
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server (`localhost:5173`). |
+| `npm run build` | Bundle the app for production (`dist/`). |
+| `npm run preview` | Serve the production build locally. |
 
-## React Compiler
+## GitHub Pages
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The site is deployed through the workflow defined in `.github/workflows/gh-pages.yml`. The workflow:
 
-## Expanding the ESLint configuration
+1. Checks out the repository.
+2. Installs dependencies and runs `npm run build`.
+3. Uses `peaceiris/actions-gh-pages` to push `dist/` to the `gh-pages` branch.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Vite’s config (`vite.config.js`) automatically sets the `base` path when the build is triggered with `GH_PAGES=true` (as it is in the workflow). On local or other environments, you can manually override the base using the `VITE_BASE_PATH` environment variable if needed:
+
+```bash
+VITE_BASE_PATH='/custom-path/' npm run build
+```
+
+Because the workflow also sets `GH_PAGES=true`, the Vite build resolves the base URL from `GITHUB_REPOSITORY` and publishes assets under `/StatFlow/` on the hosted page, keeping routing and asset loading correct.
