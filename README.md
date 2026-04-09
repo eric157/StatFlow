@@ -1,6 +1,6 @@
 # StatFlow
 
-StatFlow is a premium analytical console that layers AI reasoning, a decision wizard, and guided method details on top of a custom React + Vite shell. The repository is configured to publish the built UI to GitHub Pages so the app can live at `https://<owner>.github.io/<repo>/` (or the default GH Pages hosting URL if the repo is named `username.github.io`).
+StatFlow is a premium analytical console that layers AI reasoning, a decision wizard, and guided method details on top of a custom React + Vite shell. The repository is configured to publish the built UI to GitHub Pages so the app can live at `https://eric157.github.io/StatFlow`
 
 ## Commands
 
